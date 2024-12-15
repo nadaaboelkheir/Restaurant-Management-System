@@ -9,6 +9,7 @@ const { PORT, NODE_ENV } = require("./utils/env");
 const db = require("./models");
 const routes = require("./routes/index");
 const { createAdminIfNotExist } = require("./controllers/auth.controller");
+require("./utils/checkExpiration");
 const app = express();
 
 // Middleware for rate limiting incoming requests
