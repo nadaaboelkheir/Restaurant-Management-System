@@ -7,6 +7,8 @@ const bodyParser = require("body-parser");
 const rateLimit = require("express-rate-limit");
 const { PORT, NODE_ENV } = require("./utils/env");
 const db = require("./models");
+const routes = require("./routes/index");
+const { createAdminIfNotExist } = require("./controllers/auth.controller");
 const app = express();
 
 // Middleware for rate limiting incoming requests
@@ -74,6 +76,7 @@ db.sequelize
     console.log("Connected to the database");
 
     app.listen(PORT, async () => {
+      await createAdminIfNotExist();
 
       console.log(`Server is running on port ${PORT}`);
     });
