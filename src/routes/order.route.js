@@ -7,6 +7,7 @@ const {
   completeOrder,
   getOrderDetails,
   getAllOrders,
+  exportOrdersInExcel,
 } = require("../controllers/order.controller");
 const {
   takeOrderValidator,
@@ -17,6 +18,8 @@ const {
 } = require("../validations/order.vc");
 const { protectRoute } = require("../middlewares/auth.mw");
 
+// Note : remove auth middleware in exportOrdersInExcel for testing it in web browser
+router.get("/export", exportOrdersInExcel);
 router.get("/", protectRoute(["admin"]), getAllOrders);
 router.post("/", protectRoute(["staff"]), takeOrderValidator, takeOrder);
 router.post(
