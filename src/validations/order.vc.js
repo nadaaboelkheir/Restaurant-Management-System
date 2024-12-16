@@ -1,54 +1,58 @@
-const { check, param, query } = require("express-validator");
+const { check, param } = require("express-validator");
 const validatorMiddleware = require("../middlewares/validations.mw");
 
-// Generic validator factory
-const validateField = (source, field, type) => {
-  const validator = source(field)
+const isUUID = (fieldName) =>
+  param(fieldName).isUUID().withMessage(`${fieldName} must be a UUID`);
+const isRequiredField = (fieldName) =>
+  check(fieldName)
     .exists()
-    .withMessage(`No ${field} field exists in the request data`)
+    .withMessage(`No ${fieldName} field exists in the request data`)
     .bail()
     .trim()
     .notEmpty()
-    .withMessage(`${field} is required`);
+    .withMessage(`${fieldName} is required`);
 
-  if (type === "uuid") {
-    return validator.isUUID().withMessage(`${field} must be a UUID`);
-  } else if (type === "int") {
-    return validator.isInt().withMessage(`${field} must be an integer`);
-  }
+const isIntegerField = (fieldName) =>
+  check(fieldName)
+    .exists()
+    .withMessage(`No ${fieldName} field exists in the request data`)
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage(`${fieldName} is required`)
+    .bail()
+    .isInt()
+    .withMessage(`${fieldName} must be an integer`);
 
-  return validator; 
-};
-
-const validateUUID = (source, field) => validateField(source, field, "uuid");
-const validateInt = (source, field) => validateField(source, field, "int");
-
-exports.takeOrderValidator = [
-  validateField(check, "items")
+const isArrayField = (fieldName) =>
+  check(fieldName)
+    .exists()
+    .withMessage(`No ${fieldName} field exists in the request data`)
+    .bail()
     .isArray()
-    .withMessage("Items must be an array"),
-  validatorMiddleware,
-];
+    .withMessage(`${fieldName} must be an array`);
+
+exports.takeOrderValidator = [isArrayField("items"), validatorMiddleware];
 
 exports.addOrderItemValidator = [
-  validateUUID(check, "orderId"),
-  validateUUID(check, "menuItemId"),
-  validateInt(check, "quantity"),
+  isUUID("id"),
+  isRequiredField("menuItemId")
+    .bail()
+    .isUUID()
+    .withMessage("menuItemId must be a UUID"),
+  isIntegerField("quantity"),
   validatorMiddleware,
 ];
 
 exports.removeOrderItemValidator = [
-  validateUUID(param, "orderId"),
-  validateUUID(param, "menuItemId"),
+  isUUID("id"),
+  isRequiredField("menuItemId")
+    .bail()
+    .isUUID()
+    .withMessage("menuItemId must be a UUID"),
   validatorMiddleware,
 ];
 
-exports.completeOrderValidator = [
-  validateUUID(param, "orderId"),
-  validatorMiddleware,
-];
+exports.completeOrderValidator = [isUUID("id"), validatorMiddleware];
 
-exports.getOrderDetailsValidator = [
-  validateUUID(param, "orderId"),
-  validatorMiddleware,
-];
+exports.getOrderDetailsValidator = [isUUID("id"), validatorMiddleware];

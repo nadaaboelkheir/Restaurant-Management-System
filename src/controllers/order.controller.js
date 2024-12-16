@@ -4,6 +4,9 @@ const { OrderItem } = require("../models");
 const { MenuItem } = require("../models");
 const responseHandler = require("../utils/responseHandler");
 const ApiError = require("../utils/errorHandler");
+const moment = require("moment");
+const { Op } = require("sequelize");
+const { createExcelFile } = require("../utils/excel");
 
 exports.takeOrder = AsyncHandler(async (req, res, next) => {
   const { items } = req.body;
@@ -14,8 +17,10 @@ exports.takeOrder = AsyncHandler(async (req, res, next) => {
       "Items are required and must be a non-empty array."
     );
   }
+  console.log(items);
 
   for (const item of items) {
+    console.log(item.menuItemId);
     const menuItem = await MenuItem.findByPk(item.menuItemId);
     if (!menuItem) {
       throw ApiError.notFound(`Menu item with ID ${item.menuItemId} not found`);
@@ -171,8 +176,45 @@ exports.getOrderDetails = AsyncHandler(async (req, res, next) => {
   });
 
   if (!order) {
-   throw  ApiError.notFound("No order found with that ID")
+    throw ApiError.notFound("No order found with that ID");
   }
 
   return responseHandler(res, order, "Order fetched successfully", 200);
+});
+exports.exportOrdersInExcel = AsyncHandler(async (req, res, next) => {
+  const { startDate, endDate } = req.query;
+
+  if (!startDate || !endDate) {
+    throw ApiError.badRequest(
+      "Please provide both startDate and endDate query parameters"
+    );
+  }
+  const orders = await Order.findAll({
+    where: {
+      createdAt: {
+        [Op.between]: [moment(startDate).toDate(), moment(endDate).toDate()],
+      },
+    },
+  });
+
+  if (orders.length === 0) {
+    throw ApiError.notFound("No orders found in the specified date range");
+  }
+  const columns = [
+    { header: "Order ID", key: "OrderID", width: 50 },
+    { header: "Order Date", key: "OrderDate", width: 20 },
+    { header: "Total Amount", key: "TotalAmount", width: 15 },
+    { header: "Status", key: "Status", width: 15 },
+    { header: "Expired At", key: "ExpiredAt", width: 20 },
+  ];
+
+  const data = orders.map((order) => ({
+    OrderID: order.id,
+    OrderDate: moment(order.orderDate).format("YYYY-MM-DD_HH-mm-ss"),
+    TotalAmount: order.total,
+    Status: order.status,
+    ExpiredAt: moment(order.expiredAt).format("YYYY-MM-DD_HH-mm-ss"),
+  }));
+
+  await createExcelFile(res, "OrdersReport", columns, data);
 });
