@@ -6,7 +6,7 @@ const {
   requestPasswordReset,
   resetPassword,
 } = require("../controllers/auth.controller");
-const { signupValidator, loginValidator } = require("../validations/auth.vc");
+const { signupValidator, loginValidator, requestPasswordResetValidator, resetPasswordValidator } = require("../validations/auth.vc");
 const rateLimit = require("express-rate-limit");
 
 const limiter = rateLimit({
@@ -16,7 +16,7 @@ const limiter = rateLimit({
 });
 router.post("/signup", signupValidator, signup);
 router.post("/login", limiter, loginValidator, login);
-router.post("/request-password-reset", requestPasswordReset);
-router.post("/reset-password/:token", resetPassword);
+router.post("/request-password-reset", requestPasswordResetValidator, requestPasswordReset);
+router.post("/reset-password/:token", resetPasswordValidator, resetPassword);
 
 module.exports = router;

@@ -3,8 +3,11 @@ const AsyncHandler = require("express-async-handler");
 const ApiError = require("../utils/errorHandler");
 const { JWT_SECRET } = require("../utils/env");
 const { User } = require("../models");
-const { json } = require("body-parser");
-
+/*
+ * Middleware to protect routes
+ * @param {Array} roles - Array of roles allowed to access the route
+ * verify token
+*/
 exports.protectRoute = (roles = []) =>
   AsyncHandler(async (req, res, next) => {
     const authHeader = req.headers.authorization;
