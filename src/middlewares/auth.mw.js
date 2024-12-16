@@ -13,9 +13,9 @@ exports.protectRoute = (roles = []) =>
       throw new ApiError("No token provided", 401);
     }
     let token = authHeader.split(" ")[1];
-    const decoded = jwt.decode(token, JWT_SECRET, (err, decoded) => {
+    const decoded = jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
-        if (err.name === "TokenExpiredError") {
+        if (err.message === "jwt expired") {
           throw new ApiError("Token expired", 401);
         }
         throw new ApiError("Invalid token", 401);

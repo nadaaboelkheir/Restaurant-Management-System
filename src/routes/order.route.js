@@ -42,7 +42,7 @@ router.put(
 );
 router.get(
   "/:id",
-  protectRoute(["admin", "staff"]),
+  protectRoute(["admin"]),
   getOrderDetailsValidator,
   getOrderDetails
 );

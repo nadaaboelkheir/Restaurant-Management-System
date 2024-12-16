@@ -28,16 +28,18 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: null,
       },
+      completeAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
+      },
     },
     {
       timestamps: true,
 
       hooks: {
         beforeCreate: async (order) => {
-          order.expiredAt = new Date(Date.now() + 4*60 * 60 * 1000); 
-
-
-
+          order.expiredAt = new Date(Date.now() + 4 * 60 * 60 * 1000); 
         },
       },
     }

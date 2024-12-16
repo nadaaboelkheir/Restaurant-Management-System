@@ -39,6 +39,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
+      indexes: [
+        {
+          fields: ["orderId"]
+        },
+      ]
     }
   );
   OrderItem.associate = function (models) {

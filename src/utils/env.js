@@ -8,5 +8,9 @@ module.exports = {
 	PORT: process.env.PORT || 3000,
 	DB_PORT: process.env.DB_PORT,
 	NODE_ENV: process.env.NODE_ENV,
-	JWT_SECRET: process.env.JWT_SECRET
+	JWT_SECRET: process.env.JWT_SECRET,
+	EMAIL_HOST: process.env.EMAIL_HOST,
+	EMAIL_PORT: process.env.EMAIL_PORT,
+	EMAIL_USER: process.env.EMAIL_USER,
+	EMAIL_PASS: process.env.EMAIL_PASS
 };

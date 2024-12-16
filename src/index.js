@@ -9,6 +9,8 @@ const db = require("./models");
 const routes = require("./routes/index");
 const { createAdminIfNotExist } = require("./controllers/auth.controller");
 require("./utils/checkExpiration");
+const { swaggerUi, swaggerDocs } = require("./utils/swagger");
+
 const app = express();
 
 
@@ -38,6 +40,8 @@ app.use(cors());
 // Routes
 routes(app);
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 // Handle 404 errors for undefined routes
 app.use((req, res, next) => {
   res.status(404).send({ error: "Not Found" });
@@ -45,7 +49,7 @@ app.use((req, res, next) => {
 
 // Global error handler for uncaught errors
 app.use((err, req, res, next) => {
-  const statusCode = err.status || 500;
+  const statusCode = err.statusCode || 500;
 
   if (NODE_ENV?.trim() === "development") {
     res.status(statusCode).send({

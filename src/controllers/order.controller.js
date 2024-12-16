@@ -143,7 +143,7 @@ exports.completeOrder = AsyncHandler(async (req, res, next) => {
     throw ApiError.badRequest("Order is already completed or expired");
   }
 
-  await order.update({ status: "complete" });
+  await order.update({ status: "complete", completeAt: new Date() });
 
   return responseHandler(res, null, "Order completed successfully", 200);
 });

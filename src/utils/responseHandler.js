@@ -6,7 +6,7 @@ const responseHandler = (
   metadata = null
 ) => {
   const response = {
-    success: true,
+    status: "success",
     message,
     data,
   };

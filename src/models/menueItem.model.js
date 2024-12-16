@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
+      indexes: [
+        {
+          fields: ["category"],
+        },
+      ],
     }
   );
   MenuItem.associate = function (models) {

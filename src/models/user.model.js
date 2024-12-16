@@ -43,9 +43,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: false,
       },
+      resetToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null,
+      },
+      resetTokenExpiry: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: null,
+      },
     },
     {
       timestamps: true,
+      iindexes: [{ fields: ["email"] }],
+
       hooks: {
         beforeCreate: async (user) => {
           if (user.password) {

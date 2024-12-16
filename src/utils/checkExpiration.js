@@ -7,16 +7,20 @@ const checkExpirationOrders = AsyncHandler(async () => {
   const ordersToExpire = await Order.findAll({
     where: {
       status: "pending",
-      createdAt: {
-        [Op.lt]: new Date(new Date() - 4 * 60 * 60 * 1000),
+      expiredAt: {
+        [Op.lt]: new Date(), 
       },
     },
   });
 
+  if (ordersToExpire.length === 0) {
+    console.log("No orders to expire");
+    return;
+  }
+
   for (const order of ordersToExpire) {
     await order.update({
       status: "expired",
-      expiredAt: new Date(),
     });
     console.log(`Order ${order.id} expired due to timeout`);
   }
