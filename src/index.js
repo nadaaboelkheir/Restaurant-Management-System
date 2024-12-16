@@ -4,7 +4,6 @@ const helmet = require("helmet");
 const sanitizer = require("perfect-express-sanitizer");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const rateLimit = require("express-rate-limit");
 const { PORT, NODE_ENV } = require("./utils/env");
 const db = require("./models");
 const routes = require("./routes/index");
@@ -12,19 +11,12 @@ const { createAdminIfNotExist } = require("./controllers/auth.controller");
 require("./utils/checkExpiration");
 const app = express();
 
-// Middleware for rate limiting incoming requests
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: "Too many requests, please try again later.",
-});
+
 
 // Body parsing middleware with size limits
 app.use(express.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "100mb" }));
 
-// Apply rate limiter for all routes
-app.use(limiter);
 
 // Logging incoming requests
 app.use(morgan("dev"));
