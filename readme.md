@@ -114,7 +114,7 @@ npm run test
 
 ## Deployment
 The application is deployed at:  
-- **Backend**: []()
+- **Backend**: [https://restaurant-management-system-production-5cea.up.railway.app/api/v1/](https://restaurant-management-system-production-5cea.up.railway.app/api/v1/)
 
 ---
 
@@ -126,7 +126,7 @@ Access the interactive API documentation via Postman:
 
 ## Swagger Documentation
 Explore the complete API documentation at:  
-[]()
+[http://localhost:8080/api-docs](http://localhost:8080/api-docs)
 
 ---
 
