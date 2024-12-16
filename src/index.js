@@ -68,7 +68,7 @@ app.use((err, req, res, next) => {
 
 // Connect to the database
 db.sequelize
-  .sync({ force: false })
+.authenticate()
   .then(async () => {
     console.log("Connected to the database");
 
